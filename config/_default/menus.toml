@@ -1,0 +1,15 @@
+[[main]]
+  name = "Blog"
+  pageRef = "posts"
+  weight = 10
+
+[[main]]
+  name = "Topics"
+  pageRef = "tags"
+  weight = 20
+
+[[main]]
+  pre = "github"
+  name = "GitHub"
+  url = "https://github.com/aaronshifman"
+  weight = 30

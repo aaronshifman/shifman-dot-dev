@@ -1,0 +1,4 @@
+baseURL = "https://shifman.dev"
+languageCode = "en"
+contentDir = "content"
+enableEmoji = true

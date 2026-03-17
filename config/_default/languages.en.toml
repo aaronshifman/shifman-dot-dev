@@ -1,0 +1,9 @@
+title = "shifman.dev"
+
+[params.author]
+name = "Aaron Shifman"
+headline = "Data and Platform Engineering + Related Shenanigains"
+bio = "eh-eh-ron"
+links = [
+  { github = "https://github.com/aaronshifman" }
+]
