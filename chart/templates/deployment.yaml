@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Release.Name}}
+  labels:
+    {{- $ctx := deepCopy . -}}
+    {{- $_ := set $ctx.Values "component" "nginx" -}}
+    {{- include "commonLabels" $ctx | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- $ctx := deepCopy . -}}
+      {{- $_ := set $ctx.Values "component" "nginx" -}}
+      {{- include "selectorLabels" $ctx | nindent 6 }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        {{- $ctx := deepCopy . -}}
+        {{- $_ := set $ctx.Values "component" "nginx" -}}
+        {{- include "commonLabels" $ctx | nindent 8 }}
+        {{- with .Values.extraPodLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.tolerations}}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end}}
+      {{- with .Values.selector}}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end}}
+      securityContext:
+        fsGroupChangePolicy: "OnRootMismatch"
+        runAsNonRoot: true
+        fsGroup: 2000
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      automountServiceAccountToken: false
+      containers:
+        - securityContext:
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+          imagePullPolicy: {{.Values.imagePullPolicy}}
+          volumeMounts:
+            - mountPath: /tmp/nginx
+              name: tmp
+          name: nginx
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          {{- with .Values.resources}}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end}}
+          image: {{.Values.image}}:{{.Values.version | default .Chart.AppVersion }}
+      volumes:
+        - name: tmp
+          emptyDir: {}

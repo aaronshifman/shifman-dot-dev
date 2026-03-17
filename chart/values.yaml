@@ -1,0 +1,19 @@
+extraPodLabels:
+  k8s.shifman.dev/netpol.ingress: external
+image: ghcr.io/aaronshifman/shifman-dot-dev
+version: ~
+imagePullPolicy: Always
+resources:
+  requests:
+    cpu: 15m
+    memory: 20Mi
+  limits:
+    memory: 50Mi
+service:
+  port: 8080
+selector:
+  k8s.shifman.dev/provider: hetzner
+tolerations:
+  - key: k8s.shifman.dev/cloud
+    operator: Equal
+    value: "true"
